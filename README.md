@@ -1,19 +1,26 @@
 mldr
 ====
 
+[![Travis](https://img.shields.io/travis/fcharte/mldr.svg)](https://travis-ci.org/fcharte/mldr/) 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](http://cran.r-project.org/web/packages/mldr)
+
 Exploratory data analysis and manipulation functions for multi-label data sets along
-with interactive Shiny application to ease their use.
+with an interactive Shiny application to ease their use.
 
 ## Installation
 
-You can install this package via `install_github` from the 
+Use `install.packages` to install *mldr* and its dependencies:
+
+```R
+install.packages("mldr")
+```
+
+Alternatively, you can install it via `install_github` from the 
 [devtools](https://github.com/hadley/devtools) package.
 
 ```R
 devtools::install_github("fcharte/mldr")
 ```
-
-<!-- Add installation from CRAN when released -->
 
 ## Usage and examples
 
