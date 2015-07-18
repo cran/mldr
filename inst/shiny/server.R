@@ -12,10 +12,15 @@ shinyServer(function(input, output, session) {
       isolate({
         arfffile <- input$arffname
         xmlfile <- input$xmlname
-        if(!is.null(arfffile) && !is.null(xmlfile)) {
+
+        if (!is.null(arfffile)) {
           # Load the dataset in the global environment
-          .GlobalEnv[[arfffile$name]] <-
-            mldr(arfffile$datapath, auto_extension = FALSE, xml_file = xmlfile$datapath)
+          if (is.null(xmlfile)) # MEKA
+            .GlobalEnv[[arfffile$name]] <-
+              mldr(arfffile$datapath, auto_extension = FALSE, use_xml = FALSE)
+          else # MULAN
+            .GlobalEnv[[arfffile$name]] <-
+              mldr(arfffile$datapath, auto_extension = FALSE, xml_file = xmlfile$datapath)
 
           selected <- arfffile$name
         }
@@ -51,8 +56,8 @@ shinyServer(function(input, output, session) {
                       selected = selected)
   })
 
-  selectedMLD <- reactive({ paste("Currently selected MLD is '", input$mldrs, "'", sep = "") })
-  output$selectedMLD <- renderText(selectedMLD())
+  title <- reactive({ paste(input$mldrs, " - mldr", sep = "")})
+  output$title <- renderText(title())
 
   # Table with summary information about the mldr
   summaryTable <- reactive({

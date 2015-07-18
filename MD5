@@ -1,4 +1,4 @@
-072968df2ea5900db792f04383d3949b *DESCRIPTION
+c257031b88a2f83ad8ff41a8c1cb8be7 *DESCRIPTION
 e6a600fd5e1d9cbde2d983680233ad02 *LICENSE
 b62bafb0ceb87cb67c62d46c342bf8b6 *NAMESPACE
 85718ab52ff179db89ab5ce43dd5170c *R/GUI.R
@@ -14,7 +14,7 @@ a5a2ca0db9163ae2afb8d7ca69b19029 *R/read.arff.R
 f8fa1520039ac74725b0b4b7f4ea761b *R/transforms.R
 75efc772cb1dd0ba547e5dbd16f2e256 *R/write.arff.R
 28b863f51e0b9f90d28858e8833f6281 *R/zzz.R
-82a396d2438728c74c05ce8bdb869009 *README.md
+069b48c416590f63b14afe49866c4a0f *README.md
 720fa470ada15c4ab6e4bda14bde4931 *build/vignette.rds
 536690517eb009436acc562d14bbc942 *data/birds.rda
 d8f42f93f980d7f99905b1c9ee584f50 *data/emotions.rda
@@ -24,9 +24,9 @@ fecac78d9e8bfdc1c77b75e30bd86c18 *demo/00Index
 18eadc5bfd534ce1e571d409b0e3da59 *demo/mldrinfo.R
 82de9a70cc5ed21c6c3b884b20671818 *inst/doc/mldr.R
 6a95c2b1047142758ecd6a803d93177d *inst/doc/mldr.Rnw
-a098a27ed2e26fbe65ecc54d121f55ea *inst/doc/mldr.pdf
-feecdbc4ce7b629d9f431d3a8996fe01 *inst/shiny/server.R
-38112614b42678ebc35acca330546b45 *inst/shiny/ui.R
+bf151ece4b4ae016f0cb0b5b1fcdd026 *inst/doc/mldr.pdf
+40ee252e64487f30ce21ee1e8383ddb8 *inst/shiny/server.R
+4117420e5778485cca668b0dfc8fcd52 *inst/shiny/ui.R
 ba3194d71f53a6bf3b4d26ccf25e5b5e *man/birds.Rd
 dad809d131949c2a58d5049258fa998e *man/emotions.Rd
 739e7097def978e0237ca75a18a6e748 *man/equals-.mldr.Rd
