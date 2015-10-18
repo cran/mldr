@@ -1,8 +1,8 @@
 Package: mldr
 Title: Exploratory Data Analysis and Manipulation of Multi-Label Data
         Sets
-Version: 0.2.51
-Date: 2015-09-16
+Version: 0.2.82
+Date: 2015-10-18
 Authors@R: c( person("David", "Charte", email = "fdavidcl@outlook.com", role =
     "cre"), person("Francisco", "Charte", email = "francisco@fcharte.com", role
     = "aut"))
@@ -11,15 +11,15 @@ Description: Exploratory data analysis and manipulation functions for
     use.
 URL: https://github.com/fcharte/mldr
 Depends: R (>= 3.0.0)
-Imports: shiny (>= 0.11), XML, circlize, graphics, grDevices
+Imports: shiny (>= 0.11), XML, circlize, graphics, grDevices, stats
 Suggests: pROC, knitr
 License: LGPL (>= 3) | file LICENSE
 LazyData: true
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2015-09-16 11:27:16 UTC; fdavidcl
+Packaged: 2015-10-17 22:36:52 UTC; fdavidcl
 Author: David Charte [cre],
   Francisco Charte [aut]
 Maintainer: David Charte <fdavidcl@outlook.com>
 Repository: CRAN
-Date/Publication: 2015-09-16 13:50:30
+Date/Publication: 2015-10-18 10:20:29
