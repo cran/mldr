@@ -27,7 +27,8 @@ measures <- function(mld) {
       density = mean(mld$dataset$.labelcount) / nrow(mld$labels),
       meanIR = mean(mld$labels$IRLbl, na.rm = TRUE),  # Avoid NA IRLbls
       scumble = mean(mld$dataset$.SCUMBLE),
-      scumble.cv = sd(mld$dataset$.SCUMBLE)/mean(mld$dataset$.SCUMBLE)
+      scumble.cv = sd(mld$dataset$.SCUMBLE)/mean(mld$dataset$.SCUMBLE),
+      tcs = log((length(names(mld$dataset)) - 2 - nrow(mld$labels)) * nrow(mld$labels) * length(labelsets))
     )
   } else
     list(
@@ -41,7 +42,9 @@ measures <- function(mld) {
       cardinality = NA,
       density = NA,
       meanIR = NA,
-      scumble = NA
+      scumble = NA,
+      scumble.cv = NA,
+      tcs = 0
     )
 }
 
@@ -75,11 +78,23 @@ dataset_measures <- function(mld) {
                                    1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
                                    0)
 
-    # lblSCUMBLE: SCUMBLE mean by label
-    mld$labels$SCUMBLE <- colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE) / colSums(mld$dataset[mld$labels$index])
+    # lblSCUMBLE: SCUMBLE mean by label - Avoid dividing by 0 if there are not appearances of a label
+    mld$labels$SCUMBLE <- ifelse(colSums(mld$dataset[mld$labels$index]) == 0,
+                                 0,
+                                 sapply(mld$labels$index, function(i) mean(mld$dataset[mld$dataset[, i] != 0, ".SCUMBLE"])))
+
     # lblSCUMBLE.CV: Coefficient of variation of the corresponding SCUMBLE mean
-    mld$labels$SCUMBLE.CV <- sqrt(colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE^2) /
-                                    colSums(mld$dataset[mld$labels$index]) - mld$labels$SCUMBLE^2) / mld$labels$SCUMBLE
+    ####################################
+    # If the mean SCUMBLE of a label is 0, then its standard deviation is 0 (since SCUMBLE is always nonnegative),
+    # thus we define its CV as 0.
+    ####################################
+    mld$labels$SCUMBLE.CV <- ifelse(colSums(mld$dataset[mld$labels$index]) <= 1,
+      NA,
+      ifelse(mld$labels$SCUMBLE == 0,
+        0,
+        sapply(mld$labels$index, function(i) sd(mld$dataset[mld$dataset[, i] != 0, ".SCUMBLE"])) / mld$labels$SCUMBLE
+      )
+    )
   }
   else {
     mld$dataset$.labelcount <- numeric()

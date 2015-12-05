@@ -18,8 +18,10 @@
 #'  that should be read as labels
 #' @param label_amount Optional parameter indicating the number of labels in the
 #'  dataset, which will be taken from the last attributes of the dataset
+#' @param force_read_from_file Set this parameter to TRUE to always read from a local file,
+#'  or set it to FALSE to look for the dataset within the `mldr.datasets` package
 #' @return An mldr object containing the multilabel dataset
-#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{summary.mldr}}
+#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{read.arff}}, \code{\link{summary.mldr}}
 #' @examples
 #'
 #' library(mldr)
@@ -36,6 +38,7 @@
 #' # Read MEKA style dataset, without XML file and giving extension
 #' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 #'}
+#' @import methods
 #' @export
 mldr <- function(filename,
                  use_xml = TRUE,
@@ -43,7 +46,8 @@ mldr <- function(filename,
                  xml_file,
                  label_indices,
                  label_names,
-                 label_amount) {
+                 label_amount,
+                 force_read_from_file = !all(c(missing(xml_file), missing(label_indices), missing(label_names), missing(label_amount), use_xml, auto_extension))) {
 
   no_filename <- missing(filename)
   no_xml_file <- missing(xml_file)
@@ -51,74 +55,29 @@ mldr <- function(filename,
   no_label_names <- missing(label_names)
   no_label_amount <- missing(label_amount)
 
-  if (!no_filename) {
-    # Parameter check
-    if (!is.character(filename))
-      stop("Argument 'filename' must be a character string.")
-    if (!no_xml_file && !is.character(xml_file))
-      stop("Argument 'xml_file' must be a character string.")
+  success <- FALSE
 
-    # Calculate names of files
-    arff_file <- if (auto_extension)
-      paste(filename, ".arff", sep="")
-    else
-      filename
-
-    if (no_xml_file)
-      xml_file <- if (auto_extension)
-        paste(filename, ".xml", sep = "")
-      else {
-        noext <- unlist(strsplit(filename, ".", fixed = TRUE))
-        paste(noext[1:length(noext)], ".xml", sep = "")
-      }
-
-    # Get file contents
-    relation <- NULL
-    attrs <- NULL
-    contents <- read_arff(arff_file)
-    relation <- contents$relation
-    attrs <- contents$attributes
-    dataset <- contents$dataset
-    rm(contents)
-
-    header <- read_header(relation)
-
-    # Finding label indices. Priorities:
-    #  - label_indices
-    #  - label_names
-    #  - label_amount
-    #  - xml_file
-    #  - MEKA header
-
-    if (no_label_indices) {
-      if (use_xml && no_label_amount && no_label_names) {
-        # Read labels from XML file
-        label_names <- read_xml(xml_file)
-      }
-
-      if ((use_xml && no_label_amount) || !no_label_names) {
-        label_indices <- which(names(attrs) %in% label_names)
-      } else {
-        if (no_label_amount) {
-          # Read label amount from Meka parameters
-          label_indices <- 1:header$toplabel
-        } else {
-          label_indices <- (ncol(dataset) - label_amount + 1):ncol(dataset)
+  if (!force_read_from_file) {
+    if (requireNamespace("mldr.datasets", quietly = TRUE)) {
+      if (exists(filename)) {
+        if (existsFunction(filename)) {
+          get(filename)()
         }
+
+        ret_value <- get(filename)
+        success <- TRUE
       }
     }
+  }
 
-    # Convert labels to numeric
-    dataset[, label_indices] <- lapply(dataset[, label_indices],
-                                function(col) as.numeric(!is.na(as.numeric(col) | NA)))
-
-    # Adjust type of numeric attributes
-    dataset[, which(attrs == "numeric")] <-
-      lapply(dataset[, which(attrs == "numeric")], as.numeric)
-
-    mldr_from_dataframe(dataset, label_indices, header$name)
+  if (success) {
+    ret_value
   } else {
-    NULL
+    if (!no_filename) {
+      do.call(mldr_from_dataframe, read.arff(filename, use_xml, auto_extension, xml_file, label_indices, label_names, label_amount))
+    } else {
+      NULL
+    }
   }
 }
 
@@ -129,6 +88,8 @@ mldr <- function(filename,
 #' @param dataframe The \code{data.frame} containing the dataset attributes and labels.
 #' @param labelIndices Vector containing the indices of attributes acting as labels. Usually the
 #' labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}
+#' @param attributes Vector with the attributes type, as returned by the  \code{attributes} member of an \code{mldr}
+#' object. By default the type of the data.frame columns will be used.
 #' @param name Name of the dataset. The name of the dataset given as first parameter will be used by default
 #' @return An mldr object containing the multilabel dataset
 #' @seealso \code{\link{mldr}}, \code{\link{summary.mldr}}
@@ -145,8 +106,7 @@ mldr <- function(filename,
 #'
 #' @import stats
 #' @export
-#'
-mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
+mldr_from_dataframe <- function(dataframe, labelIndices, attributes, name) {
   if(!is.data.frame(dataframe))
     stop(paste(substitute(dataframe), "is not a valid data.frame"))
 
@@ -160,20 +120,30 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
   new_mldr$name <- if(missing(name)) substitute(dataframe) else name
   new_mldr$dataset <- dataframe
 
-  new_mldr$attributesIndexes <- 1:length(dataframe)
-  new_mldr$attributesIndexes <- new_mldr$attributesIndexes[! new_mldr$attributesIndexes %in% labelIndices]
-  new_mldr$attributes <- sapply(new_mldr$dataset, class)
-  new_mldr$attributes[labelIndices] <- "{0,1}"
-  factorIndexes <- which(new_mldr$attributes == "factor")
-  if(length(factorIndexes > 0))
-    new_mldr$attributes[factorIndexes] <- sapply(factorIndexes,
-                                                 function(idx) paste("{", paste(
-                                                   levels(new_mldr$dataset[, names(new_mldr$attributes)[idx]]),
-                                                   collapse = ","), "}", sep = ""))
+  #new_mldr$attributesIndexes <- 1:length(dataframe)
+  #new_mldr$attributesIndexes <- new_mldr$attributesIndexes[! new_mldr$attributesIndexes %in% labelIndices]
+  new_mldr$attributesIndexes <- which(!1:length(dataframe) %in% labelIndices)
+
+  if (missing(attributes)) {
+    new_mldr$attributes <- sapply(new_mldr$dataset, class)
+    new_mldr$attributes[labelIndices] <- "{0,1}"
+    factorIndexes <- which(new_mldr$attributes == "character")
+
+    if (length(factorIndexes > 0))
+      new_mldr$attributes[factorIndexes] <- sapply(factorIndexes, function(idx)
+          paste("{", paste(
+              levels(as.factor(new_mldr$dataset[, idx])),
+              collapse = ","
+            ), "}", sep = ""
+          )
+        )
+  } else {
+    new_mldr$attributes <- attributes
+  }
 
   new_mldr$labels <- label_measures(dataframe, labelIndices)
   new_mldr$labelsets <- if(nrow(dataframe) > 0)
-                           sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
+                          sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
                         else
                           array()
   new_mldr <- dataset_measures(new_mldr)
