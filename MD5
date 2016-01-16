@@ -1,4 +1,4 @@
-969d717f4ca8b08020c9c263e72740ab *DESCRIPTION
+faf218652152482e3d477e1397cc8dce *DESCRIPTION
 e6a600fd5e1d9cbde2d983680233ad02 *LICENSE
 208aae26b97adb469e3f5ad714a5d1b8 *NAMESPACE
 85718ab52ff179db89ab5ce43dd5170c *R/GUI.R
@@ -9,14 +9,14 @@ e7859b98687d0b436b3c52044a782939 *R/concurrence.R
 0c70cc486302361c4b25418c6b7b19c3 *R/generics.R
 62bb5de0300e9f3ab2209f45cf128208 *R/graphics.R
 bdea0c611523fe0690c8d1e8325ebfe9 *R/measures.R
-ed22d360490f339ca371925a67cf2e75 *R/mldr.R
+8e22eec068e96f94d1ba62ce2e100de8 *R/mldr.R
 f6b4e806c869b373cbaa0a0740b455fc *R/operators.R
 3daa2338546f8e19babd28a1a625a22c *R/read.arff.R
 f8fa1520039ac74725b0b4b7f4ea761b *R/transforms.R
 75efc772cb1dd0ba547e5dbd16f2e256 *R/write.arff.R
 28b863f51e0b9f90d28858e8833f6281 *R/zzz.R
-13abbf51903ec8d17aa96aecc51bc82e *README.md
-aad8f8b71aecea4fcac184eae226fcc3 *build/vignette.rds
+36264da1239a285f844ba02752d31703 *README.md
+1b13643e48c900534c079027d9242364 *build/vignette.rds
 5695ee42f0f433592ac0736d0ae77d6a *data/birds.rda
 7e3b4fcc1adf4711dd30ab24606bd4f2 *data/emotions.rda
 93036ef9a836cf9e4bd132be9b04f0ea *data/genbase.rda
@@ -24,10 +24,10 @@ f352d6dee056e26a04019a678183c43e *demo/00Index
 c7d2c3d1e177fbca92077d2b33e2abed *demo/decouple.R
 18eadc5bfd534ce1e571d409b0e3da59 *demo/mldrinfo.R
 68fa52ec7b2708b35d4838a247dbeacf *demo/rebuild_datasets.R
-5e755bff3b06b814f8fb67e36fe98869 *inst/CITATION
+9580cd4af4378326c237072fd9b77fbd *inst/CITATION
 82de9a70cc5ed21c6c3b884b20671818 *inst/doc/mldr.R
 6a95c2b1047142758ecd6a803d93177d *inst/doc/mldr.Rnw
-a28a648c08a02c96be4b916538adea9e *inst/doc/mldr.pdf
+29d147f9e08095168da63da3fc363c26 *inst/doc/mldr.pdf
 4937e3a3fbf36c48f05e1a6b265a230c *inst/shiny/rsconnect/shinyapps.io/fdavidcl/mldr.dcf
 a0c5554fd4637b1e40b99c7064ec27a3 *inst/shiny/server.R
 1371f6bbc7a1baf615988b6fd116a03e *inst/shiny/ui.R
