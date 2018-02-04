@@ -21,9 +21,11 @@
 #'  that should be read as labels
 #' @param label_amount Optional parameter indicating the number of labels in the
 #'  dataset, which will be taken from the last attributes of the dataset
-#' @return A list containing four members: dataframe (containing the dataset),
-#'  labelIndices (specifying the indices of the attributes that correspond to
-#'  labels), attributes (containing name and type of each attribute) and name of
+#' @param ... Extra parameters that will be passed to the parsers. Currently
+#'  only the option \code{stringsAsFactors} is available
+#' @return A list containing four members: \code{dataframe} containing the dataset,
+#'  \code{labelIndices} specifying the indices of the attributes that correspond to
+#'  labels, \code{attributes} containing name and type of each attribute and \code{name} of
 #'  the dataset.
 #' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
 #' @examples
@@ -40,7 +42,7 @@ read.arff <- function(filename,
                       xml_file,
                       label_indices,
                       label_names,
-                      label_amount) {
+                      label_amount, ...) {
 
   no_filename <- missing(filename)
   no_xml_file <- missing(xml_file)
@@ -72,7 +74,7 @@ read.arff <- function(filename,
     # Get file contents
     relation <- NULL
     attrs <- NULL
-    contents <- read_arff_internal(arff_file)
+    contents <- read_arff_internal(arff_file, ...)
     relation <- contents$relation
     attrs <- contents$attributes
     dataset <- contents$dataset
@@ -97,9 +99,17 @@ read.arff <- function(filename,
         label_indices <- which(names(attrs) %in% label_names)
       } else {
         if (no_label_amount) {
-          # Read label amount from Meka parameters
-          label_indices <- 1:header$toplabel
-        } else {
+          # Read label amount from Meka parameters, from the end
+          # if the amount is negative
+          if (header$toplabel < 0) {
+            label_amount <- -header$toplabel
+            no_label_amount <- FALSE
+          } else {
+            label_indices <- 1:header$toplabel
+          }
+        }
+
+        if (!no_label_amount) {
           label_indices <- (ncol(dataset) - label_amount + 1):ncol(dataset)
         }
       }
@@ -132,7 +142,7 @@ read.arff <- function(filename,
 # @return List containing the relation string,
 #  a named vector for attributes and a data.frame
 #  for the data section
-read_arff_internal <- function(arff_file) {
+read_arff_internal <- function(arff_file, ...) {
   file_con <- file(arff_file, "rb")
 
   if (!isOpen(file_con))
@@ -165,9 +175,9 @@ read_arff_internal <- function(arff_file) {
   # Build data.frame with @data section
   rawdata <- file_data[data_start:length(file_data)]
   dataset <- if (detect_sparsity(rawdata))
-    parse_sparse_data(rawdata, num_attrs)
+    parse_sparse_data(rawdata, num_attrs, ...)
   else
-    parse_nonsparse_data(rawdata, num_attrs)
+    parse_nonsparse_data(rawdata, num_attrs, ...)
 
   rm(rawdata)
   names(dataset) <- names(attributes)
@@ -199,7 +209,10 @@ parse_attributes <- function(arff_attrs) {
   # We capture any spacing character ignoring those within braces or single quotes,
   # allowing the appearance of escaped single quotes (\').
   #-----------------------------------------------------------------------------------------------------
-  rgx <- "(?:{[^}\\s]*?(\\s+[^}\\s]*?)+}|(?<!\\\\)'[^'\\\\]*(?:\\\\.[^'\\\\]*)*(?<!\\\\)')(*SKIP)(*F)|\\s+"
+  # Regex tested in https://regex101.com/r/tE5mP1/20
+  #-----------------------------------------------------------------------------------------------------
+
+  rgx <- "(?:{(?:.*?)}\\s*$|(?<!\\\\)'[^'\\\\]*(?:.*?)(?<!\\\\)'|(?<!\\\\)\"(?:.*?)(?<!\\\\)\"|(\\s*?)@)(*SKIP)(*F)|\\s+"
   att_list <- strsplit(arff_attrs, rgx, perl = TRUE)
 
   # Structure by rows
@@ -208,8 +221,10 @@ parse_attributes <- function(arff_attrs) {
   rm(att_list)
   # Filter any data that is not an attribute
   att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1], ignore.case = TRUE), 2:3]
-  att_mat <- gsub("\\'", "'", att_mat, fixed = T)
   att_mat <- gsub("^'(.*?)'$", "\\1", att_mat, perl = T)
+  att_mat <- gsub('^"(.*?)"$', "\\1", att_mat, perl = T)
+  att_mat[, 1] <- gsub("\\'", "'", att_mat[, 1], fixed = T)
+  att_mat[, 1] <- gsub('\\"', '"', att_mat[, 1], fixed = T)
 
   # Create the named vector
   att_v <- att_mat[, 2]
@@ -242,7 +257,7 @@ read_xml <- function(xml_file) {
 # @param arff_relation "relation" line of the ARFF file
 # @return Number of labels in the dataset
 read_header <- function(arff_relation) {
-  rgx <- regexpr("[\\w\\-\\._]+\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = TRUE)
+  rgx <- regexpr("[\\w\\-\\._]+\\s*:\\s*-[Cc]\\s*-?\\d+", arff_relation, perl = TRUE)
   hdr <- strsplit(regmatches(arff_relation, rgx), "\\s*:\\s*-[Cc]\\s*")
 
   if (length(hdr) > 0) {
@@ -272,19 +287,19 @@ detect_sparsity <- function(arff_data) {
 #
 # @param arff_data Content of the data section
 # @return data.frame containing data values
-parse_nonsparse_data <- function(arff_data, num_attrs) {
+parse_nonsparse_data <- function(arff_data, num_attrs, stringsAsFactors = F) {
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
     ncol = num_attrs,
     byrow = T
-  ), stringsAsFactors = F)
+  ), stringsAsFactors = stringsAsFactors)
 }
 
 # Builds a data.frame out of sparse ARFF data
 #
 # @param arff_data Content of the data section
 # @return data.frame containing data values
-parse_sparse_data <- function(arff_data, num_attrs) {
+parse_sparse_data <- function(arff_data, num_attrs, stringsAsFactors = F) {
   # Extract data items
   arff_data <- strsplit(gsub("[\\{\\}]", "", arff_data), ",")
   arff_data <- lapply(arff_data, function(item) {
@@ -299,5 +314,5 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   })
 
   # Create and return data.frame
-  data.frame(t(dataset), stringsAsFactors = F)
+  data.frame(t(dataset), stringsAsFactors = stringsAsFactors)
 }
