@@ -121,7 +121,7 @@ undefined_strats$na = undefined_strats$ignore
 treat_undefined <- function(value, tp, fp, tn, fn) {
   if (is.function(value)) {
     value(tp, fp, tn, fn)
-  } else if (is.function(undefined_strats[[value]])) {
+  } else if (value %in% names(undefined_strats) && is.function(undefined_strats[[value]])) {
     undefined_strats[[value]](tp, fp, tn, fn)
   } else {
     value
@@ -130,7 +130,7 @@ treat_undefined <- function(value, tp, fp, tn, fn) {
 
 # BASE EVALUATION METRICS =====================================================
 base_accuracy <- function(tp, fp, tn, fn)
-  (tp + tn) / (tp + fp + tn + fn)
+  tp / (tp + fp + fn)
 
 base_precision <- function(tp, fp, tn, fn, undefined_value = "diagnose") {
   if (tp + fp == 0)
@@ -146,10 +146,11 @@ base_recall <- function(tp, fp, tn, fn, undefined_value = "diagnose") {
     tp / (tp + fn)
 }
 
-base_fmeasure <- function(precision_f, recall_f) function(true_labels, predicted_labels, ...) {
-  p <- precision_f(true_labels, predicted_labels, ...)
-  r <- recall_f(true_labels, predicted_labels, ...)
-  2 * p * r / (p + r)
+base_fmeasure = function(tp, fp, tn, fn, ...) {
+  if (tp + fp + fn == 0)
+    1
+  else
+    2 * tp / (2 * tp + fn + fp)
 }
 
 # AVERAGING FUNCTIONALS =======================================================
@@ -228,12 +229,12 @@ macro_recall <- macro(base_recall)
 
 #' @rdname evmetrics-av
 #' @export
-fmeasure <- base_fmeasure(precision, recall)
+fmeasure <- instance_avg(base_fmeasure)
 
 #' @rdname evmetrics-av
 #' @export
-micro_fmeasure <- base_fmeasure(micro_precision, micro_recall)
+micro_fmeasure <- micro(base_fmeasure)
 
 #' @rdname evmetrics-av
 #' @export
-macro_fmeasure <- base_fmeasure(macro_precision, macro_recall)
+macro_fmeasure <- macro(base_fmeasure)
