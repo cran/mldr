@@ -1,7 +1,7 @@
 Package: mldr
 Title: Exploratory Data Analysis and Manipulation of Multi-Label Data
         Sets
-Version: 0.4.1
+Version: 0.4.2
 Date: 2019-01-16
 Authors@R: c(
     person("David", "Charte", email = "fdavidcl@ugr.es", role = "cre", comment = c(ORCID = "0000-0002-4830-9512")),
@@ -17,13 +17,13 @@ Suggests: pROC, knitr, mldr.datasets, testthat
 License: LGPL (>= 3) | file LICENSE
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-01-16 15:49:14 UTC; fdavidcl
+Packaged: 2019-01-28 12:26:09 UTC; fdavidcl
 Author: David Charte [cre] (<https://orcid.org/0000-0002-4830-9512>),
   Francisco Charte [aut] (<https://orcid.org/0000-0002-3083-8942>),
   Antonio J. Rivera [aut]
 Maintainer: David Charte <fdavidcl@ugr.es>
 Repository: CRAN
-Date/Publication: 2019-01-16 16:30:03 UTC
+Date/Publication: 2019-01-28 13:10:12 UTC
