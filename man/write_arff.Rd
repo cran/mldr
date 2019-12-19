@@ -20,7 +20,11 @@ Save the \code{mldr} content to an ARFF file and the label data to an XML file.
 }
 \examples{
 
-write_arff(emotions, "myemotions")
+\donttest{
+dir <- tempdir()
+write_arff(emotions, file.path(dir, "myemotions"))
+file.remove(file.path(dir, "myemotions.arff"))
+}
 }
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}

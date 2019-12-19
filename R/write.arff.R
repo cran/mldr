@@ -10,7 +10,11 @@
 #' In mldr.datasets: \code{\link[mldr.datasets]{write.mldr}}
 #' @examples
 #'
-#' write_arff(emotions, "myemotions")
+#' \donttest{
+#' dir <- tempdir()
+#' write_arff(emotions, file.path(dir, "myemotions"))
+#' file.remove(file.path(dir, "myemotions.arff"))
+#' }
 #' @export
 write_arff <- function(obj, filename, write.xml = FALSE) {
   # Open file

@@ -1,4 +1,4 @@
-0710ad36bb7f8650d4727d264e08e418 *DESCRIPTION
+82f1be7ab220e622681ab067878f1009 *DESCRIPTION
 e6a600fd5e1d9cbde2d983680233ad02 *LICENSE
 872710654b70a9b05e33a93bcd3a7e07 *NAMESPACE
 85718ab52ff179db89ab5ce43dd5170c *R/GUI.R
@@ -10,16 +10,16 @@ e42a1c5cde17b5d7b9036a1f1577b02b *R/evmetrics_ml.R
 fc83af8eeea76755eca2ee75710b24f4 *R/evmetrics_rk.R
 bb904348f1b2641c262b88c6945066c3 *R/filters.R
 0c70cc486302361c4b25418c6b7b19c3 *R/generics.R
-62bb5de0300e9f3ab2209f45cf128208 *R/graphics.R
+93a89e2f725c3ef590d4fd6d060e30d1 *R/graphics.R
 bdea0c611523fe0690c8d1e8325ebfe9 *R/measures.R
 f60dea2c1ebf36dce2215a7ba1b4f9dd *R/mldr.R
 46d319c5192e62fdd0a2be0059871eed *R/operators.R
 4d8b9ad906e107d03c0d52f14b58683e *R/read.arff.R
 f8fa1520039ac74725b0b4b7f4ea761b *R/transforms.R
-87a3120f63654b54480cb3844831f87d *R/write.arff.R
+4019c23f5539ef80397124b010fc8e5a *R/write.arff.R
 28b863f51e0b9f90d28858e8833f6281 *R/zzz.R
-ae2397048de1215945fc4b2269a41cec *README.md
-a2b7a5063bcfe4990c5d774fc04ee781 *build/vignette.rds
+5e7a19f1bb1636ff63664a725c34d36e *README.md
+520d75a02ab796ba182310eb2dafa996 *build/vignette.rds
 5695ee42f0f433592ac0736d0ae77d6a *data/birds.rda
 7e3b4fcc1adf4711dd30ab24606bd4f2 *data/emotions.rda
 93036ef9a836cf9e4bd132be9b04f0ea *data/genbase.rda
@@ -30,7 +30,7 @@ c7d2c3d1e177fbca92077d2b33e2abed *demo/decouple.R
 9279bde654d4d288c64678e816a27e8c *inst/CITATION
 82de9a70cc5ed21c6c3b884b20671818 *inst/doc/mldr.R
 6a95c2b1047142758ecd6a803d93177d *inst/doc/mldr.Rnw
-7be62228a86eae9e864acf0f4fc1314a *inst/doc/mldr.pdf
+fa109abe9b7a3c34f190139fee5609be *inst/doc/mldr.pdf
 a0c5554fd4637b1e40b99c7064ec27a3 *inst/shiny/server.R
 1371f6bbc7a1baf615988b6fd116a03e *inst/shiny/ui.R
 590279b1391edc0243e2d68f37891d3c *man/birds.Rd
@@ -56,7 +56,7 @@ f041d2eb2a20adfd0dc82f86e4f6c005 *man/mldr_to_labels.Rd
 c69ae4ec059eb70f2082756817e5b1c8 *man/roc.mldr.Rd
 edc05ca316a0dc7a4da3fe43c9c7b41e *man/sub-.mldr.Rd
 73ce82957a64608adb210fc19aa2b1e1 *man/summary.mldr.Rd
-0be5a2699c3d054a8a1f1f1a2cff270d *man/write_arff.Rd
+f543d5da26a88198c2befb0b3f10a949 *man/write_arff.Rd
 ae758ae6eb01ae523139c732d89a1435 *tests/testthat.R
 a4d924ca9a3e38cb919531045ae94cbb *tests/testthat/test-evmetrics_rk.R
 4d4302412db730e9efc876a4a6c25c2d *vignettes/RocCurve.pdf
